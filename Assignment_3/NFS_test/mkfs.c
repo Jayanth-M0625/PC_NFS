@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
     bitmap_t b;
     for (i = 0; i < 1024; i++)
 	b.bits[i] = 0;
-    b.bits[0] = 0x1 << 31; // first entry is allocated
+    b.bits[0] = 0x1 << 31; // first entry is allocated, (32-1)
     
     rc = pwrite(fd, &b, UFS_BLOCK_SIZE, s.inode_bitmap_addr * UFS_BLOCK_SIZE);
     assert(rc == UFS_BLOCK_SIZE);

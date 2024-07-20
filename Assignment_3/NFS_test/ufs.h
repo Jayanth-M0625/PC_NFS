@@ -59,5 +59,15 @@ typedef struct __ufs {
 	bitmap_t data_btmp;//bits[0] to write
 	Inodes inodes;//read 4th block(3). inodes.inode[0] for first one
     Data_Blocks dir_blocks;//usage: for both this and inode blocks, to access the first one use dir_blocks.dir_block[0] and dir_blocks.dir_block[31] for the last one
+    char image_filepath[4096+1];//store image file path.
+    int fd; // File descriptor for image file (initialized to -1)
 } ufs;
+
+typedef struct __UFS_Stat_t {
+    int type;   // MFS_DIRECTORY or MFS_REGULAR
+    int size;   // bytes
+    // note: no permissions, access times, etc.
+} UFS_Stat_t;
+
+
 #endif // __ufs_h__
