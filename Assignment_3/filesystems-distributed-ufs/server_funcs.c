@@ -176,6 +176,14 @@ int UFS_Creat(int pinum, int type, char *name){
             for (int i = 2; i < 128; i++){//set other entries to -1
 	        UFS.dir_blocks.dir_block[avail_data].entries[i].inum = -1;}
             UFS.inodes.inode[pinum].size += sizeof(dir_ent_t);//increase size of parent dir. d_dir got 2 entries but pdir got only 1 extra entry
+            //make a new entry in parent dir
+            for (int i = 0; i < 128; i++) {
+                if (UFS.dir_blocks.dir_block[pinum].entries[i].inum == -1) {
+                UFS.dir_blocks.dir_block[pinum].entries[i].name = name;
+                UFS.dir_blocks.dir_block[pinum].entries[i].inum = avail_inode;
+                break;
+                }
+            }
             UFS.fd = open(UFS.image_filepath, O_RDWR);
             int n = write(UFS.fd, &UFS, sizeof(UFS));
             close(UFS.fd);
@@ -186,6 +194,14 @@ int UFS_Creat(int pinum, int type, char *name){
             UFS.inodes.inode[avail_inode].direct[0] = avail_data + 4;//data addr + free block addr
             for (int i = 1; i < DIRECT_PTRS; i++){//set data ptrs to -1
 	        UFS.inodes.inode[avail_inode].direct[i] = -1;}
+            //update parent dir
+            for (int i = 0; i < 128; i++) {
+                if (UFS.dir_blocks.dir_block[pinum].entries[i].inum == -1) {
+                UFS.dir_blocks.dir_block[pinum].entries[i].name = name;
+                UFS.dir_blocks.dir_block[pinum].entries[i].inum = avail_inode;
+                break;
+                }
+            }
             UFS.fd = open(UFS.image_filepath, O_RDWR);
             int n = write(UFS.fd, &UFS, sizeof(UFS));
             close(UFS.fd);
